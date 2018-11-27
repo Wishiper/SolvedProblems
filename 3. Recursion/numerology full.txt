@@ -1,0 +1,58 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+public class Numerology {
+    public static int[] counterMagic = new int[10];
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        String dateInString = in.readLine();
+
+        ArrayList<Integer> date = new ArrayList<>(8);
+
+        for (int i = 0; i < dateInString.length(); i++) {
+            date.add(dateInString.charAt(i) - '0');
+        }
+
+        playNumerology(date);
+
+        printResultFromNumerology(counterMagic);
+
+    }
+
+    public static void playNumerology(ArrayList<Integer> date) {
+        if (date.size() == 1) {
+            int lastDigit = date.get(0);
+            counterMagic[lastDigit]++;
+        } else {
+            for (int i = 0; i < date.size() - 1; i++) {
+                int firstDigit = date.get(i);
+                int secondDigit = date.get(i + 1);
+                date.remove(i + 1);
+
+                int result = applyFormula(firstDigit, secondDigit);
+                date.set(i, result);
+
+                playNumerology(date);
+
+                date.set(i, firstDigit);
+                date.add(i + 1, secondDigit);
+            }
+        }
+    }
+
+    public static int applyFormula(int a, int b) {
+        return (a + b) * (a ^ b) % 10;
+    }
+
+    public static void printResultFromNumerology(int[] numbers) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < numbers.length; i++) {
+            sb.append(numbers[i]).append(" ");
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        System.out.println(sb);
+    }
+}
